@@ -1,4 +1,4 @@
-import * as SignalR from "@microsoft/signalr";
+import * as SignalR from "@microsoft/signalr/dist/browser/signalr";
 
 const EventEmitter = require("events");
 
@@ -148,6 +148,11 @@ function install(Vue, connection) {
           });
         });
       }
+    },
+    beforeDestroy() {
+      // Make sure to cleanup SignalR event handlers when removing the component
+      if (this.options.log) console.log("stopping connection");
+      Socket.connection.stop();
     }
   });
 }

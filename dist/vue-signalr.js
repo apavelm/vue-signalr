@@ -23,7 +23,7 @@ var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/ge
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
 
-var SignalR = _interopRequireWildcard(require("@microsoft/signalr"));
+var SignalR = _interopRequireWildcard(require("@microsoft/signalr/dist/browser/signalr"));
 
 var EventEmitter = require("events");
 
@@ -364,6 +364,11 @@ function install(Vue, connection) {
           });
         });
       }
+    },
+    beforeDestroy: function beforeDestroy() {
+      // Make sure to cleanup SignalR event handlers when removing the component
+      if (this.options.log) console.log("stopping connection");
+      Socket.connection.stop();
     }
   });
 }

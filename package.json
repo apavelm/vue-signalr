@@ -1,6 +1,6 @@
 {
   "name": "@apavelm/vue-signalr",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Signalr client for vue js",
   "main": "dist/vue-signalr.js",
   "files": [

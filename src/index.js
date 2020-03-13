@@ -151,9 +151,7 @@ function install(Vue, connection) {
     },
     beforeDestroy() {
       // Make sure to cleanup SignalR event handlers when removing the component
-      if (this.$options) {
-        if (this.$options.log) console.log("stopping connection");
-
+      if (this.$options.sockets) {
         Socket.connection.stop();
       }
     }

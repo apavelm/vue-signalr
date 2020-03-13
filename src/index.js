@@ -1,9 +1,9 @@
-import * as SignalR from '@aspnet/signalr';
+import * as SignalR from "@microsoft/signalr";
 
-const EventEmitter = require('events');
+const EventEmitter = require("events");
 
 const defaultOptions = {
-  log: false,
+  log: false
 };
 
 class SocketConnection extends EventEmitter {
@@ -19,29 +19,32 @@ class SocketConnection extends EventEmitter {
     this.offline = false;
   }
 
-  async _initialize(connection = '', transportType = SignalR.HttpTransportType.None) {
+  async _initialize(
+    connection = "",
+    transportType = SignalR.HttpTransportType.None
+  ) {
     const con = connection || this.connection;
 
     try {
       const socket = new SignalR.HubConnectionBuilder()
         .withUrl(con)
-        .build(transportType)
-        
-      socket.connection.onclose = async (error) => {
-        if (this.options.log) console.log('Reconnecting...');
+        .build(transportType);
+
+      socket.connection.onclose = async error => {
+        if (this.options.log) console.log("Reconnecting...");
 
         this.socket = false;
         /* eslint-disable no-underscore-dangle */
         await this._initialize(con, SignalR.HttpTransportType.LongPolling);
-        this.emit('reconnect');
+        this.emit("reconnect");
       };
 
       await socket.start();
 
       this.socket = socket;
-      this.emit('init');
+      this.emit("init");
     } catch (error) {
-      if (this.options.log) console.log('Error, reconnecting...');
+      if (this.options.log) console.log("Error, reconnecting...");
 
       setTimeout(() => {
         this._initialize(con, SignalR.HttpTransportType.LongPolling);
@@ -68,9 +71,9 @@ class SocketConnection extends EventEmitter {
     if (this.listened.some(v => v === method)) return;
     this.listened.push(method);
 
-    this.on('init', () => {
-      this.socket.on(method, (data) => {
-        if (this.options.log) console.log({ type: 'receive', method, data });
+    this.on("init", () => {
+      this.socket.on(method, data => {
+        if (this.options.log) console.log({ type: "receive", method, data });
 
         this.emit(method, data);
       });
@@ -78,7 +81,7 @@ class SocketConnection extends EventEmitter {
   }
 
   send(methodName, ...args) {
-    if (this.options.log) console.log({ type: 'send', methodName, args });
+    if (this.options.log) console.log({ type: "send", methodName, args });
     if (this.offline) return;
 
     if (this.socket) {
@@ -86,11 +89,11 @@ class SocketConnection extends EventEmitter {
       return;
     }
 
-    this.once('init', () => this.socket.send(methodName, ...args));
+    this.once("init", () => this.socket.send(methodName, ...args));
   }
 
   async invoke(methodName, ...args) {
-    if (this.options.log) console.log({ type: 'invoke', methodName, args });
+    if (this.options.log) console.log({ type: "invoke", methodName, args });
     if (this.offline) return false;
 
     if (this.socket) {
@@ -98,19 +101,18 @@ class SocketConnection extends EventEmitter {
     }
 
     return new Promise(async resolve =>
-      this.once('init', () =>
-        resolve(this.socket.invoke(methodName, ...args))));
+      this.once("init", () => resolve(this.socket.invoke(methodName, ...args)))
+    );
   }
-
 }
 
 if (!SignalR) {
-  throw new Error('[Vue-SignalR] Cannot locate signalr-client');
+  throw new Error("[Vue-SignalR] Cannot locate signalr-client");
 }
 
 function install(Vue, connection) {
   if (!connection) {
-    throw new Error('[Vue-SignalR] Cannot locate connection');
+    throw new Error("[Vue-SignalR] Cannot locate connection");
   }
 
   const Socket = new SocketConnection(connection);
@@ -118,38 +120,35 @@ function install(Vue, connection) {
   Vue.socket = Socket;
 
   Object.defineProperties(Vue.prototype, {
-
     $socket: {
       get() {
         return Socket;
-      },
-    },
-
+      }
+    }
   });
 
   Vue.mixin({
-
     created() {
       if (this.$options.sockets) {
         const methods = Object.getOwnPropertyNames(this.$options.sockets);
 
-        methods.forEach((method) => {
+        methods.forEach(method => {
           Socket.listen(method);
 
           Socket.on(method, data =>
-            this.$options.sockets[method].call(this, data));
+            this.$options.sockets[method].call(this, data)
+          );
         });
       }
 
       if (this.$options.subscribe) {
-        Socket.on('authenticated', () => {
-          this.$options.subscribe.forEach((channel) => {
-            Socket.invoke('join', channel);
+        Socket.on("authenticated", () => {
+          this.$options.subscribe.forEach(channel => {
+            Socket.invoke("join", channel);
           });
         });
       }
-    },
-
+    }
   });
 }
 

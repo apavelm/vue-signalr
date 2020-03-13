@@ -1,6 +1,6 @@
 {
-  "name": "@latelier/vue-signalr",
-  "version": "1.1.9",
+  "name": "@apavelm/vue-signalr",
+  "version": "1.0.0",
   "description": "Signalr client for vue js",
   "main": "dist/vue-signalr.js",
   "files": [
@@ -13,28 +13,30 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/latelierco/vue-signalr.git"
+    "url": "git+https://github.com/apavelm/vue-signalr.git"
   },
   "keywords": [
     "vue",
     "vuejs",
     "signalr"
   ],
-  "author": "L'Atelier <hello@latelier.co>",
+  "author": "L'Atelier <hello@latelier.co>, Pavel Andreev <apavelm@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/latelierco/vue-signalr/issues"
+    "url": "https://github.com/apavelm/vue-signalr/issues"
   },
-  "homepage": "https://github.com/latelierco/vue-signalr#readme",
+  "browserslist": "> 0.25%, not dead",
+  "homepage": "https://github.com/apavelm/vue-signalr#readme",
   "dependencies": {
-    "@aspnet/signalr": "^1.0.3",
-    "@aspnet/signalr-protocol-msgpack": "^1.1.0",
-    "tslib": "^1.9.3"
+    "@microsoft/signalr": "^3.1.2",
+    "@microsoft/signalr-protocol-msgpack": "^3.1.2",
+    "tslib": "^1.11.1",
+    "@babel/runtime": "^7.8.7"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1"
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.7",
+    "@babel/plugin-transform-runtime": "^7.8.3",
+    "@babel/preset-env": "^7.8.7"
   }
 }

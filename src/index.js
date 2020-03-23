@@ -152,7 +152,7 @@ function install(Vue, connection) {
     beforeDestroy() {
       // Make sure to cleanup SignalR event handlers when removing the component
       if (this.$options.sockets) {
-        console.log("Stoping listner by destruction");
+        Socket.socket.connection.onclose = function() {};
         Socket.socket.stop();
         Socket.socket.completeClose();
       }
